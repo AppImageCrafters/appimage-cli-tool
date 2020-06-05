@@ -111,6 +111,16 @@ func (registry *Registry) Update() {
 	}
 }
 
+func (registry *Registry) Lookup(id string) (string, bool) {
+	for fileName, entry := range registry.Entries {
+		if entry.Id == id {
+			return fileName, true
+		}
+	}
+
+	return "", false
+}
+
 func getFileSha1Checksum(fileName string) (string, error) {
 	applicationsDir, err := MakeApplicationsDirPath()
 	if err != nil {

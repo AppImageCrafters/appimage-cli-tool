@@ -22,7 +22,7 @@ func (cmd *RemoveCmd) Run(*Context) (err error) {
 	}
 	registry.Update()
 
-	fileName, ok := cmd.lookupFileName(registry)
+	fileName, ok := registry.Lookup(cmd.Id)
 	if !ok {
 		fileName = cmd.Id
 	}
@@ -48,16 +48,6 @@ func (cmd *RemoveCmd) Run(*Context) (err error) {
 	}
 	fmt.Println("Application removed: " + fileName)
 	return err
-}
-
-func (cmd *RemoveCmd) lookupFileName(registry *utils.Registry) (string, bool) {
-	for fileName, entry := range registry.Entries {
-		if entry.Id == cmd.Id {
-			return fileName, true
-		}
-	}
-
-	return "", false
 }
 
 func uninstallAppImage(filePath string) error {
