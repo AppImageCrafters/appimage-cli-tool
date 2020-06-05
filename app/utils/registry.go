@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type RegistryEntry struct {
@@ -78,6 +80,34 @@ func (registry *Registry) Get(fileName string) RegistryEntry {
 func (registry *Registry) Unset(fileName string) {
 
 	delete(registry.Entries, fileName)
+}
+
+func (registry *Registry) Update() {
+	applicationsDir, err := MakeApplicationsDirPath()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	files, err := ioutil.ReadDir(applicationsDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, f := range files {
+		if strings.HasSuffix(f.Name(), ".AppImage") {
+			_, ok := registry.Entries[f.Name()]
+			if !ok {
+				_ = registry.Set(f.Name(), "unknown-id")
+			}
+		}
+	}
+
+	for fileName, _ := range registry.Entries {
+		filePath := filepath.Join(applicationsDir, fileName)
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			registry.Unset(fileName)
+		}
+	}
 }
 
 func getFileSha1Checksum(fileName string) (string, error) {
