@@ -73,8 +73,9 @@ func (registry *Registry) Set(fileName string, id string) error {
 	return nil
 }
 
-func (registry *Registry) Get(fileName string) RegistryEntry {
-	return registry.Entries[fileName]
+func (registry *Registry) Get(fileName string) (entry RegistryEntry, ok bool) {
+	entry, ok = registry.Entries[fileName]
+	return entry, ok
 }
 
 func (registry *Registry) Unset(fileName string) {

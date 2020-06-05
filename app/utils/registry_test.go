@@ -39,7 +39,7 @@ func TestRegistry_Get(t *testing.T) {
 		t.Error(err)
 	}
 
-	entry := registry.Get("AppImageUpdate-x86_64-old.AppImage")
+	entry, _ := registry.Get("AppImageUpdate-x86_64-old.AppImage")
 	assert.Equal(t, entry, registry.Entries["AppImageUpdate-x86_64-old.AppImage"])
 
 	err = registry.Close()
