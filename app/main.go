@@ -8,7 +8,8 @@ import (
 var cli struct {
 	Debug bool `help:"Enable debug mode."`
 
-	Search commands.SearchCmd `cmd help:"Search applications in the store."`
+	Search  commands.SearchCmd  `cmd help:"Search applications in the store."`
+	Install commands.InstallCmd `cmd help:"Install application."`
 }
 
 func main() {

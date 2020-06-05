@@ -1,11 +1,8 @@
 package commands
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/tidwall/gjson"
-	"io"
-	"net/http"
 )
 
 type SearchCmd struct {
@@ -13,7 +10,7 @@ type SearchCmd struct {
 }
 
 func (r *SearchCmd) Run(*Context) error {
-	jsonData, err := r.query()
+	jsonData, err := queryUrl("https://www.pling.com/json/search/p/" + r.Query + "/s/AppImageHub.com")
 	if err != nil {
 		return err
 	}
@@ -30,20 +27,4 @@ func (r *SearchCmd) Run(*Context) error {
 	}
 
 	return nil
-}
-
-func (r *SearchCmd) query() (bytes.Buffer, error) {
-	query := "https://www.pling.com/json/search/p/" + r.Query + "/s/AppImageHub.com"
-	resp, err := http.Get(query)
-	if err != nil {
-		return bytes.Buffer{}, err
-	}
-	defer resp.Body.Close()
-
-	var json bytes.Buffer
-	_, err = io.Copy(&json, resp.Body)
-	if err != nil {
-		return bytes.Buffer{}, err
-	}
-	return json, nil
 }
