@@ -46,7 +46,7 @@ func (cmd *RemoveCmd) Run(*Context) (err error) {
 	if err != nil {
 		return fmt.Errorf("Unable to remove AppImage file: " + err.Error())
 	}
-	fmt.Println("Application remove: " + fileName)
+	fmt.Println("Application removed: " + fileName)
 	return err
 }
 
