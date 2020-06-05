@@ -12,6 +12,7 @@ var cli struct {
 	Install commands.InstallCmd `cmd help:"Install application."`
 	List    commands.ListCmd    `cmd help:"List installed applications."`
 	Remove  commands.RemoveCmd  `cmd help:"Remove application."`
+	Update  commands.UpdateCmd  `cmd help:"Update application."`
 }
 
 func main() {
