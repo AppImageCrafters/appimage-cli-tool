@@ -10,6 +10,7 @@ var cli struct {
 
 	Search  commands.SearchCmd  `cmd help:"Search applications in the store."`
 	Install commands.InstallCmd `cmd help:"Install application."`
+	List    commands.ListCmd    `cmd help:"List installed applications."`
 }
 
 func main() {

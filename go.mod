@@ -11,5 +11,6 @@ require (
 	github.com/rainycape/dl v0.0.0-20151222075243-1b01514224a1
 	github.com/schollz/progressbar/v3 v3.3.3
 	github.com/sirupsen/logrus v1.6.0 // indirect
+	github.com/stretchr/testify v1.3.0
 	github.com/tidwall/gjson v1.6.0
 )

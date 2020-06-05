@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"appimage-installer/app/utils"
 	"fmt"
 	"github.com/tidwall/gjson"
 )
@@ -10,7 +11,7 @@ type SearchCmd struct {
 }
 
 func (r *SearchCmd) Run(*Context) error {
-	jsonData, err := queryUrl("https://www.pling.com/json/search/p/" + r.Query + "/s/AppImageHub.com")
+	jsonData, err := utils.QueryUrl("https://www.pling.com/json/search/p/" + r.Query + "/s/AppImageHub.com")
 	if err != nil {
 		return err
 	}

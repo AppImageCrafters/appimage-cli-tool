@@ -5,9 +5,8 @@ package commands
 import "C"
 
 import (
+	"appimage-installer/app/utils"
 	"fmt"
-	"os"
-	"os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -65,7 +64,7 @@ func (cmd *InstallCmd) appImageHubInstall(path string) (err error) {
 		return err
 	}
 
-	err = downloadAppImage(result.Url, filePath)
+	err = utils.DownloadAppImage(result.Url, filePath)
 	if err != nil {
 		return err
 	}
@@ -163,13 +162,7 @@ func installAppImage(filePath string) error {
 }
 
 func (cmd *InstallCmd) makeTargetFilePath(link *DownloadLink) (string, error) {
-	usr, err := user.Current()
-	if err != nil {
-		return "", err
-	}
-
-	applicationsPath := filepath.Join(usr.HomeDir, "Applications")
-	err = os.MkdirAll(applicationsPath, os.ModePerm)
+	applicationsPath, err := utils.MakeApplicationsDirPath()
 	if err != nil {
 		return "", err
 	}

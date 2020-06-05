@@ -1,4 +1,4 @@
-package commands
+package utils
 
 import (
 	"bytes"
@@ -7,9 +7,25 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"os/user"
+	"path/filepath"
 )
 
-func queryUrl(url string) (bytes.Buffer, error) {
+func MakeApplicationsDirPath() (string, error) {
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+
+	applicationsPath := filepath.Join(usr.HomeDir, "Applications")
+	err = os.MkdirAll(applicationsPath, os.ModePerm)
+	if err != nil {
+		return "", err
+	}
+	return applicationsPath, nil
+}
+
+func QueryUrl(url string) (bytes.Buffer, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return bytes.Buffer{}, err
@@ -25,7 +41,7 @@ func queryUrl(url string) (bytes.Buffer, error) {
 	return data, nil
 }
 
-func downloadAppImage(url string, filePath string) error {
+func DownloadAppImage(url string, filePath string) error {
 	output, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		return err
