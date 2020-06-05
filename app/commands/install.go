@@ -70,6 +70,12 @@ func (cmd *InstallCmd) appImageHubInstall(path string) (err error) {
 	}
 	fmt.Println("AppImage downloaded to: " + filePath)
 
+	registry, _ := utils.OpenRegistry()
+	if registry != nil {
+		_ = registry.Set(result.Name, "appimagehub:"+path)
+		_ = registry.Close()
+	}
+
 	err = installAppImage(filePath)
 	if err != nil {
 		fmt.Println("Registration failed: " + err.Error())
