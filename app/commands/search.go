@@ -2,8 +2,11 @@ package commands
 
 import (
 	"appimage-installer/app/utils"
+	"bytes"
 	"fmt"
+	"github.com/juju/ansiterm"
 	"github.com/tidwall/gjson"
+	"os"
 )
 
 type SearchCmd struct {
@@ -19,13 +22,28 @@ func (r *SearchCmd) Run(*Context) error {
 	jsonParser := gjson.Parse(jsonData.String())
 
 	products := jsonParser.Get(`#(title="Products").values`)
+
+	var buf bytes.Buffer
+	tabWriter := ansiterm.NewTabWriter(&buf, 20, 4, 0, ' ', 0)
+	tabWriter.SetColorCapable(true)
+
+	tabWriter.SetForeground(ansiterm.Green)
+	_, _ = tabWriter.Write([]byte("Id\t Name\t Category\t Publisher\n"))
+	_, _ = tabWriter.Write([]byte("--\t ----\t --------\t ---------\n"))
+
+	tabWriter.SetForeground(ansiterm.DarkGray)
+
 	for _, product := range products.Array() {
 		id := product.Get(`project_id`).String()
 		title := product.Get(`title`).String()
 		category := product.Get(`cat_title`).String()
 		username := product.Get(`username`).String()
-		fmt.Printf("appimagehub:%s %s (%s) by %s\n", id, title, category, username)
+
+		fmt.Fprintf(tabWriter, "appimagehub:%s\t %s\t %s\t %s\n", id, title, category, username)
 	}
+
+	_ = tabWriter.Flush()
+	_, _ = os.Stdout.Write(buf.Bytes())
 
 	return nil
 }
