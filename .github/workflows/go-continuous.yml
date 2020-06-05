@@ -1,0 +1,45 @@
+name: Continuous Releases
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: |
+          go get -v -t -d ./...
+          if [ -f Gopkg.toml ]; then
+              curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+              dep ensure
+          fi
+
+      - name: Build
+        run: go build -o ./dist/app -v ./app
+
+      - name: Update Release
+        uses: johnwbyrd/update-release@v1.0.0
+        with:
+          # Your Github token; try \$\{\{ secrets.GITHUB_TOKEN \}\} if your build lasts less than an hour, or create your own secret token with repository access if your build requires longer than an hour.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Paths to built files to be released. May be absolute or relative to \$\{\{ github.workspace \}\}.
+          files: ./dist/app
+          # The name of the release to be created. A reasonable looking release name will be created from the current \$\{\{ github.ref \}\} if this input is not supplied.
+          release: continuous
+          message: # optional
+          # Should the release, if created, be marked as a prerelease?  Such releases are generally publicly visible.
+          prerelease: # optional, default is true
