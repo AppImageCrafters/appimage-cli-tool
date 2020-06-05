@@ -98,7 +98,7 @@ func (registry *Registry) Update() {
 		if strings.HasSuffix(f.Name(), ".AppImage") {
 			_, ok := registry.Entries[f.Name()]
 			if !ok {
-				_ = registry.Set(f.Name(), "unknown-id")
+				_ = registry.Set(f.Name(), "")
 			}
 		}
 	}
