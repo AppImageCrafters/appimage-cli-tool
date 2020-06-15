@@ -9,10 +9,10 @@ var cli struct {
 	Debug bool `help:"Enable debug mode."`
 
 	Search  commands.SearchCmd  `cmd help:"Search applications in the store."`
-	Install commands.InstallCmd `cmd help:"Install application."`
+	Install commands.InstallCmd `cmd help:"Install an application."`
 	List    commands.ListCmd    `cmd help:"List installed applications."`
-	Remove  commands.RemoveCmd  `cmd help:"Remove application."`
-	Update  commands.UpdateCmd  `cmd help:"Update application."`
+	Remove  commands.RemoveCmd  `cmd help:"Remove an application."`
+	Update  commands.UpdateCmd  `cmd help:"Update an application."`
 }
 
 func main() {

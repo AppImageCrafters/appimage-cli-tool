@@ -13,6 +13,8 @@ import (
 
 type UpdateCmd struct {
 	Target string `arg name:"target" help:"Updates the target application." type:"string"`
+
+	Check bool `help:"Only check for updates."`
 }
 
 func (cmd *UpdateCmd) Run(*Context) (err error) {
@@ -35,6 +37,11 @@ func (cmd *UpdateCmd) Run(*Context) (err error) {
 
 	if !updateAvailable {
 		fmt.Println("No updates were found for: ", filePath)
+		return
+	}
+
+	if cmd.Check {
+		fmt.Println("Update available for: ", filePath)
 		return
 	}
 
