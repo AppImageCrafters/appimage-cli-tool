@@ -23,7 +23,7 @@ func (r *ListCmd) Run(*Context) error {
 	tabWriter.SetColorCapable(true)
 
 	tabWriter.SetForeground(ansiterm.Green)
-	_, _ = tabWriter.Write([]byte("Id\t File Name\t SHA1\n"))
+	_, _ = tabWriter.Write([]byte("Target\t File Name\t SHA1\n"))
 	_, _ = tabWriter.Write([]byte("--\t ---------\t ----\n"))
 
 	tabWriter.SetForeground(ansiterm.DarkGray)
