@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"appimage-manager/app/utils"
 
@@ -11,11 +12,11 @@ import (
 )
 
 type UpdateCmd struct {
-	Id string `arg name:"id" help:"Installation id or file name." type:"string"`
+	Target string `arg name:"target" help:"Updates the target application." type:"string"`
 }
 
 func (cmd *UpdateCmd) Run(*Context) (err error) {
-	filePath, err := cmd.getApplicationFilePath()
+	filePath, err := cmd.getBundleFilePath()
 	if err != nil {
 		return err
 	}
@@ -48,16 +49,24 @@ func (cmd *UpdateCmd) Run(*Context) (err error) {
 	return nil
 }
 
-func (cmd *UpdateCmd) getApplicationFilePath() (string, error) {
+func (cmd *UpdateCmd) getBundleFilePath() (string, error) {
+	if strings.HasPrefix(cmd.Target, "file://") {
+		cmd.Target = cmd.Target[7:]
+	}
+
+	if _, err := os.Stat(cmd.Target); err == nil {
+		return cmd.Target, nil
+	}
+
 	registry, err := utils.OpenRegistry()
 	if err != nil {
 		return "", err
 	}
 	registry.Update()
 
-	fileName, ok := registry.Lookup(cmd.Id)
+	fileName, ok := registry.Lookup(cmd.Target)
 	if !ok {
-		fileName = cmd.Id
+		fileName = cmd.Target
 	}
 
 	applicationsDir, err := utils.MakeApplicationsDirPath()
@@ -67,7 +76,7 @@ func (cmd *UpdateCmd) getApplicationFilePath() (string, error) {
 	filePath := filepath.Join(applicationsDir, fileName)
 
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		return "", fmt.Errorf("application not found \"" + cmd.Id + "\"")
+		return "", fmt.Errorf("application not found \"" + cmd.Target + "\"")
 	}
 	return filePath, nil
 }
