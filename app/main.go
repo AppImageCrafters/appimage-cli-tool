@@ -1,7 +1,7 @@
 package main
 
 import (
-	"appimage-installer/app/commands"
+	"appimage-manager/app/commands"
 	"github.com/alecthomas/kong"
 )
 

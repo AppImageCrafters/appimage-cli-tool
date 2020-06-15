@@ -5,7 +5,7 @@ package commands
 import "C"
 
 import (
-	"appimage-installer/app/utils"
+	"appimage-manager/app/utils"
 	"fmt"
 	"path/filepath"
 	"strconv"

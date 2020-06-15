@@ -17,3 +17,4 @@
 # GoLand
 .idea/
 bin/
+build/

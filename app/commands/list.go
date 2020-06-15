@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"appimage-installer/app/utils"
+	"appimage-manager/app/utils"
 	"bytes"
 	"github.com/juju/ansiterm"
 	"os"

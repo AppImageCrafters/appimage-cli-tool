@@ -4,7 +4,7 @@ package commands
 // #include <stdlib.h>
 import "C"
 import (
-	"appimage-installer/app/utils"
+	"appimage-manager/app/utils"
 	"fmt"
 	"github.com/rainycape/dl"
 	"os"

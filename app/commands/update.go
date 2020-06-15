@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"appimage-installer/app/utils"
+	"appimage-manager/app/utils"
 
 	"github.com/AppImageCrafters/appimage-update"
 )

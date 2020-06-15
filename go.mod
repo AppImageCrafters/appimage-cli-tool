@@ -1,9 +1,9 @@
-module appimage-installer
+module appimage-manager
 
 go 1.13
 
 require (
-	github.com/AppImageCrafters/appimage-update v0.1.2
+	github.com/AppImageCrafters/appimage-update v0.1.3
 	github.com/alecthomas/kong v0.2.9
 	github.com/antchfx/xmlquery v1.2.4
 	github.com/juju/ansiterm v0.0.0-20180109212912-720a0952cc2a
