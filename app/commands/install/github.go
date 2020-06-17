@@ -2,7 +2,6 @@ package install
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"appimage-manager/app/utils"
@@ -10,50 +9,63 @@ import (
 	"github.com/google/go-github/v31/github"
 )
 
-func InstallGithubTarget(target string) error {
-	target_parts := strings.Split(target, "/")
-
-	download_links, err := getLatestReleaseDownloadLinks(target_parts)
-	if err != nil {
-		return err
-	}
-
-	if len(download_links) == 0 {
-		return fmt.Errorf("no AppImages releases found")
-	}
-
-	download_link, err := utils.PromptBinarySelection(download_links)
-
-	target_path, err := utils.MakeTargetFilePath(download_link)
-	if err != nil {
-		return err
-	}
-
-	err = utils.DownloadAppImage(download_link.Url, target_path)
-	if err != nil {
-		return err
-	}
-
-	registry, _ := utils.OpenRegistry()
-	if registry != nil {
-		_ = registry.Set(download_link.Name, "github:"+target)
-		_ = registry.Close()
-	}
-
-	err = utils.InstallAppImage(target_path)
-	if err != nil {
-		fmt.Println("Registration failed: " + err.Error())
-	} else {
-		fmt.Println("Registration completed")
-	}
-
-	return nil
+type GitHubRepo struct {
+	User    string
+	Project string
+	Release string
+	File    string
 }
-func getLatestReleaseDownloadLinks(target_parts []string) ([]utils.DownloadLink, error) {
-	download_links := []utils.DownloadLink{}
+
+func NewGitHubRepo(target string) (repo Repo, err error) {
+	if !strings.HasPrefix(target, "github:") {
+		return repo, InvalidTargetFormat
+	}
+
+	repo = &GitHubRepo{}
+
+	targetParts := strings.Split(target[7:], "/")
+	targetPartsLen := len(targetParts)
+	if targetPartsLen < 2 {
+		return repo, InvalidTargetFormat
+	}
+
+	ghSource := GitHubRepo{
+		User:    targetParts[0],
+		Project: targetParts[1],
+	}
+
+	if targetPartsLen > 2 {
+		ghSource.Release = targetParts[2]
+	}
+
+	if targetPartsLen > 3 {
+		ghSource.File = targetParts[3]
+	}
+
+	return &ghSource, nil
+}
+
+func (g GitHubRepo) Id() string {
+	id := "github:" + g.User + "/" + g.Project
+
+	if g.Release != "" {
+		id += "/" + g.Release
+	} else {
+		id += "/latest"
+	}
+
+	if g.File != "" {
+		id += "/" + g.File
+	}
+
+	return id
+}
+
+func (g GitHubRepo) GetLatestRelease() (*Release, error) {
+	var downloadLinks []utils.BinaryUrl
 
 	client := github.NewClient(nil)
-	releases, _, err := client.Repositories.ListReleases(context.Background(), target_parts[0], target_parts[1], nil)
+	releases, _, err := client.Repositories.ListReleases(context.Background(), g.User, g.Project, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -65,17 +77,25 @@ func getLatestReleaseDownloadLinks(target_parts []string) ([]utils.DownloadLink,
 
 		for _, asset := range release.Assets {
 			if strings.HasSuffix(*asset.Name, ".AppImage") {
-				download_links = append(download_links, utils.DownloadLink{
-					Name: *asset.Name,
-					Url:  *asset.BrowserDownloadURL,
+				downloadLinks = append(downloadLinks, utils.BinaryUrl{
+					FileName: *asset.Name,
+					Url:      *asset.BrowserDownloadURL,
 				})
 			}
 		}
 
-		if len(download_links) > 0 {
-			return download_links, nil
+		if len(downloadLinks) > 0 {
+			return &Release{
+				*release.TagName,
+				downloadLinks,
+			}, nil
 		}
 	}
 
-	return download_links, nil
+	return nil, NoAppImageBinariesFound
+}
+
+func (g GitHubRepo) Download(binaryUrl *utils.BinaryUrl, targetPath string) (err error) {
+	err = utils.DownloadAppImage(binaryUrl.Url, targetPath)
+	return
 }

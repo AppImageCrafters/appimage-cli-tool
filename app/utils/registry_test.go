@@ -23,7 +23,7 @@ func TestRegistry_Set(t *testing.T) {
 		t.Error(err)
 	}
 
-	_ = registry.Set("AppImageUpdate-x86_64-old.AppImage", "appimagehub:23942034")
+	_ = registry.Add("AppImageUpdate-x86_64-old.AppImage", "appimagehub:23942034")
 	_, ok := registry.Entries["AppImageUpdate-x86_64-old.AppImage"]
 	assert.True(t, ok)
 
@@ -54,7 +54,7 @@ func TestRegistry_Unset(t *testing.T) {
 		t.Error(err)
 	}
 
-	registry.Unset("AppImageUpdate-x86_64-old.AppImage")
+	registry.Remove("AppImageUpdate-x86_64-old.AppImage")
 	_, ok := registry.Entries["AppImageUpdate-x86_64-old.AppImage"]
 	assert.False(t, ok)
 

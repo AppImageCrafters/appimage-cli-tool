@@ -1,112 +1,92 @@
 package install
 
 import (
-	"fmt"
-	"strconv"
-	"strings"
-
 	"appimage-manager/app/commands"
 	"appimage-manager/app/utils"
-
-	"github.com/antchfx/xmlquery"
+	"fmt"
+	"os"
 )
 
 type InstallCmd struct {
 	Target string `arg name:"target" help:"Installation target." type:"string"`
 }
 
+type Release struct {
+	Tag   string
+	files []utils.BinaryUrl
+}
+
+type Repo interface {
+	Id() string
+	GetLatestRelease() (*Release, error)
+	Download(binaryUrl *utils.BinaryUrl, targetPath string) error
+}
+
 func (cmd *InstallCmd) Run(*commands.Context) (err error) {
-	cmd.Target, err = utils.UrlToTarget(cmd.Target)
+	repo, err := cmd.parseTarget()
 	if err != nil {
 		return err
 	}
 
-	targetParts := strings.SplitN(cmd.Target, ":", 2)
-	if len(targetParts) < 2 {
-		return fmt.Errorf("invalid installation id '%s'", cmd.Target)
+	release, err := repo.GetLatestRelease()
+	if err != nil {
+		return err
 	}
 
-	source := targetParts[0]
-
-	switch source {
-	case "appimagehub":
-		err = cmd.appImageHubInstall(targetParts[1])
-	case "github":
-		err = InstallGithubTarget(targetParts[1])
-	default:
-		return fmt.Errorf("invalid installation id '%s'", cmd.Target)
+	selectedBinary, err := utils.PromptBinarySelection(release.files)
+	if err != nil {
+		return err
 	}
 
+	targetFilePath, err := utils.MakeTargetFilePath(selectedBinary)
+	if err != nil {
+		return err
+	}
+
+	if _, err = os.Stat(targetFilePath); err == nil {
+		return ApplicationInstalled
+	}
+
+	err = repo.Download(selectedBinary, targetFilePath)
+	if err != nil {
+		return err
+	}
+
+	cmd.addToRegistry(targetFilePath, repo)
+
+	err = cmd.makeDesktopIntegration(err, targetFilePath)
 	return
 }
 
-func (cmd *InstallCmd) appImageHubInstall(path string) (err error) {
-	doc, err := xmlquery.LoadURL("https://www.appimagehub.com/ocs/v1/content/data/" + path)
-	if err != nil {
-		return
+func (cmd *InstallCmd) parseTarget() (Repo, error) {
+	repo, err := NewGitHubRepo(cmd.Target)
+	if err == nil {
+		return repo, nil
 	}
 
-	downloadLinks, err := cmd.appImageHubParseDownloadLinks(doc)
-	if err != nil {
-		return err
+	repo, err = NewAppImageHubRepo(cmd.Target)
+	if err == nil {
+		return repo, nil
 	}
 
-	result, err := utils.PromptBinarySelection(downloadLinks)
-	if err != nil {
-		return err
-	}
+	return nil, InvalidTargetFormat
+}
 
-	filePath, err := utils.MakeTargetFilePath(result)
-	if err != nil {
-		return err
-	}
-
-	err = utils.DownloadAppImage(result.Url, filePath)
-	if err != nil {
-		return err
-	}
-	fmt.Println("AppImage downloaded to: " + filePath)
-
+func (cmd *InstallCmd) addToRegistry(targetFilePath string, source Repo) {
 	registry, _ := utils.OpenRegistry()
 	if registry != nil {
-		_ = registry.Set(result.Name, "appimagehub:"+path)
+		_ = registry.Add(targetFilePath, source.Id())
 		_ = registry.Close()
 	}
-
-	err = utils.InstallAppImage(filePath)
-	if err != nil {
-		fmt.Println("Registration failed: " + err.Error())
-	} else {
-		fmt.Println("Registration completed")
-	}
-	return
 }
 
-func (cmd *InstallCmd) appImageHubParseDownloadLinks(doc *xmlquery.Node) ([]utils.DownloadLink, error) {
-	var downloadLinks []utils.DownloadLink
-	for i := 1; i < 100; i++ {
-		idx := strconv.Itoa(i)
-		link, err := xmlquery.Query(doc, "//ocs/data/content/downloadlink"+idx+"/text()")
-		if err != nil {
-			return nil, err
-		}
-		name, err := xmlquery.Query(doc, "//ocs/data/content/downloadname"+idx+"/text()")
-		if err != nil {
-			return nil, err
-		}
-
-		if link == nil {
-			break
-		}
-
-		downloadLink := utils.DownloadLink{
-			Name: name.Data,
-			Url:  link.Data,
-		}
-
-		if strings.HasSuffix(downloadLink.Name, ".AppImage") {
-			downloadLinks = append(downloadLinks, downloadLink)
-		}
+func (cmd *InstallCmd) makeDesktopIntegration(err error, targetFilePath string) error {
+	fmt.Println("Integrating with the desktop environment")
+	err = utils.Integrate(targetFilePath)
+	if err != nil {
+		fmt.Println("Integration failed: " + err.Error())
+	} else {
+		fmt.Println("Integration completed")
 	}
-	return downloadLinks, nil
+	return err
 }

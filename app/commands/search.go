@@ -28,7 +28,7 @@ func (r *SearchCmd) Run(*Context) error {
 	tabWriter.SetColorCapable(true)
 
 	tabWriter.SetForeground(ansiterm.Green)
-	_, _ = tabWriter.Write([]byte("Target\t Name\t Category\t Publisher\n"))
+	_, _ = tabWriter.Write([]byte("Target\t FileName\t Category\t Publisher\n"))
 	_, _ = tabWriter.Write([]byte("--\t ----\t --------\t ---------\n"))
 
 	tabWriter.SetForeground(ansiterm.DarkGray)

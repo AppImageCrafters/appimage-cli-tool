@@ -59,8 +59,8 @@ func (registry *Registry) Close() error {
 	return nil
 }
 
-func (registry *Registry) Set(fileName string, id string) error {
-	sha1Checksum, err := getFileSha1Checksum(fileName)
+func (registry *Registry) Add(filePath string, id string) error {
+	sha1Checksum, err := getFileSha1Checksum(filePath)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (registry *Registry) Set(fileName string, id string) error {
 		registry.Entries = map[string]RegistryEntry{}
 	}
 
-	registry.Entries[fileName] = RegistryEntry{Id: id, SHA1: sha1Checksum}
+	registry.Entries[filepath.Base(filePath)] = RegistryEntry{Id: id, SHA1: sha1Checksum}
 	return nil
 }
 
@@ -78,8 +78,7 @@ func (registry *Registry) Get(fileName string) (entry RegistryEntry, ok bool) {
 	return entry, ok
 }
 
-func (registry *Registry) Unset(fileName string) {
-
+func (registry *Registry) Remove(fileName string) {
 	delete(registry.Entries, fileName)
 }
 
@@ -98,7 +97,7 @@ func (registry *Registry) Update() {
 		if strings.HasSuffix(f.Name(), ".AppImage") {
 			_, ok := registry.Entries[f.Name()]
 			if !ok {
-				_ = registry.Set(f.Name(), "")
+				_ = registry.Add(filepath.Join(applicationsDir, f.Name()), "")
 			}
 		}
 	}
@@ -106,7 +105,7 @@ func (registry *Registry) Update() {
 	for fileName, _ := range registry.Entries {
 		filePath := filepath.Join(applicationsDir, fileName)
 		if _, err := os.Stat(filePath); os.IsNotExist(err) {
-			registry.Unset(fileName)
+			registry.Remove(fileName)
 		}
 	}
 }
@@ -121,14 +120,7 @@ func (registry *Registry) Lookup(id string) (string, bool) {
 	return "", false
 }
 
-func getFileSha1Checksum(fileName string) (string, error) {
-	applicationsDir, err := MakeApplicationsDirPath()
-	if err != nil {
-		return "", err
-	}
-
-	filePath := filepath.Join(applicationsDir, fileName)
-
+func getFileSha1Checksum(filePath string) (string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return "", err

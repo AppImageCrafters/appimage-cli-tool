@@ -103,12 +103,12 @@ func resolveGithubProjectTarget(target string) (string, error) {
 	return "github:" + target_parts[0] + "/" + target_parts[1], nil
 }
 
-type DownloadLink struct {
-	Name string
-	Url  string
+type BinaryUrl struct {
+	FileName string
+	Url      string
 }
 
-func PromptBinarySelection(downloadLinks []DownloadLink) (result *DownloadLink, err error) {
+func PromptBinarySelection(downloadLinks []BinaryUrl) (result *BinaryUrl, err error) {
 	if len(downloadLinks) == 1 {
 		return &downloadLinks[0], nil
 	}
@@ -117,10 +117,10 @@ func PromptBinarySelection(downloadLinks []DownloadLink) (result *DownloadLink, 
 		Label: "Select binary to download",
 		Items: downloadLinks,
 		Templates: &promptui.SelectTemplates{
-			Label:    "   {{ .Name }}",
-			Active:   "\U00002705 {{ .Name }}",
-			Inactive: "   {{ .Name }}",
-			Selected: "\U00002705 {{ .Name }}"},
+			Label:    "   {{ .FileName }}",
+			Active:   "\U00002705 {{ .FileName }}",
+			Inactive: "   {{ .FileName }}",
+			Selected: "\U00002705 {{ .FileName }}"},
 	}
 
 	i, _, err := prompt.Run()
@@ -131,7 +131,7 @@ func PromptBinarySelection(downloadLinks []DownloadLink) (result *DownloadLink, 
 	return &downloadLinks[i], nil
 }
 
-func InstallAppImage(filePath string) error {
+func Integrate(filePath string) error {
 	lib, err := dl.Open("libappimage.so", 0)
 	if err != nil {
 		return fmt.Errorf("desktop integration not available")
@@ -161,12 +161,12 @@ func InstallAppImage(filePath string) error {
 	return nil
 }
 
-func MakeTargetFilePath(link *DownloadLink) (string, error) {
+func MakeTargetFilePath(link *BinaryUrl) (string, error) {
 	applicationsPath, err := MakeApplicationsDirPath()
 	if err != nil {
 		return "", err
 	}
 
-	filePath := filepath.Join(applicationsPath, link.Name)
+	filePath := filepath.Join(applicationsPath, link.FileName)
 	return filePath, nil
 }
