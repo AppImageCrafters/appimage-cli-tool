@@ -17,6 +17,10 @@ type GitHubRepo struct {
 }
 
 func NewGitHubRepo(target string) (repo Repo, err error) {
+	if strings.HasPrefix(target, "https://github.com/") {
+		target = strings.Replace(target, "https://github.com/", "github:", 1)
+	}
+
 	if !strings.HasPrefix(target, "github:") {
 		return repo, InvalidTargetFormat
 	}
