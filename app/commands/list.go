@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"github.com/juju/ansiterm"
 	"os"
+	"sort"
 )
 
 type ListCmd struct {
@@ -23,13 +24,22 @@ func (r *ListCmd) Run(*Context) error {
 	tabWriter.SetColorCapable(true)
 
 	tabWriter.SetForeground(ansiterm.Green)
-	_, _ = tabWriter.Write([]byte("Target\t File FileName\t SHA1\n"))
-	_, _ = tabWriter.Write([]byte("--\t ---------\t ----\n"))
+	_, _ = tabWriter.Write([]byte("Repo\t File Name\t SHA1\n"))
+	_, _ = tabWriter.Write([]byte("----\t ---------\t ----\n"))
 
 	tabWriter.SetForeground(ansiterm.DarkGray)
 
+	var lines [][]string
 	for fileName, v := range registry.Entries {
-		_, _ = tabWriter.Write([]byte(v.Id + "\t " + fileName + "\t " + v.SHA1 + "\n"))
+		line := []string{v.Repo, fileName, v.SHA1}
+		lines = append(lines, line)
+	}
+	sort.Slice(lines, func(i int, j int) bool {
+		return lines[i][1] < lines[j][1]
+	})
+
+	for _, line := range lines {
+		_, _ = tabWriter.Write([]byte(line[0] + "\t " + line[1] + "\t " + line[2] + "\n"))
 	}
 	_ = tabWriter.Flush()
 	_, _ = os.Stdout.Write(buf.Bytes())

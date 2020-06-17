@@ -13,7 +13,7 @@ import (
 )
 
 type RegistryEntry struct {
-	Id   string
+	Repo string
 	SHA1 string
 }
 
@@ -69,7 +69,7 @@ func (registry *Registry) Add(filePath string, id string) error {
 		registry.Entries = map[string]RegistryEntry{}
 	}
 
-	registry.Entries[filepath.Base(filePath)] = RegistryEntry{Id: id, SHA1: sha1Checksum}
+	registry.Entries[filepath.Base(filePath)] = RegistryEntry{Repo: id, SHA1: sha1Checksum}
 	return nil
 }
 
@@ -112,7 +112,7 @@ func (registry *Registry) Update() {
 
 func (registry *Registry) Lookup(id string) (string, bool) {
 	for fileName, entry := range registry.Entries {
-		if entry.Id == id {
+		if entry.Repo == id {
 			return fileName, true
 		}
 	}
