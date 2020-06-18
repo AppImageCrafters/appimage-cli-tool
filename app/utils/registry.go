@@ -119,8 +119,12 @@ func (registry *Registry) createEntryFromFile(filePath string) RegistryEntry {
 }
 
 func (registry *Registry) Lookup(target string) (RegistryEntry, bool) {
+	applicationsDir, _ := MakeApplicationsDirPath()
+	possibleFullPath := filepath.Join(applicationsDir, target)
+
 	for _, entry := range registry.Entries {
-		if entry.FileSha1 == target || entry.FilePath == target || entry.Repo == target {
+		if entry.FileSha1 == target || entry.FilePath == target ||
+			entry.FilePath == possibleFullPath || entry.Repo == target {
 			return entry, true
 		}
 	}
@@ -131,10 +135,7 @@ func (registry *Registry) Lookup(target string) (RegistryEntry, bool) {
 
 		return entry, true
 	} else {
-		applicationsDir, _ := MakeApplicationsDirPath()
-		target = filepath.Join(applicationsDir, target)
-
-		if IsAppImageFile(target) {
+		if IsAppImageFile(possibleFullPath) {
 			entry := registry.createEntryFromFile(target)
 			_ = registry.Add(entry)
 

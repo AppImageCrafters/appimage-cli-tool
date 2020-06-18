@@ -29,7 +29,6 @@ func (cmd *UpdateCmd) Run(*Context) (err error) {
 	for _, target := range cmd.Targets {
 		entry, err := cmd.getRegistryEntry(target)
 		if err != nil {
-			println(err)
 			continue
 		}
 
@@ -96,7 +95,7 @@ func getAllTargets() ([]string, error) {
 	}
 	registry.Update()
 
-	paths := make([]string, len(registry.Entries))
+	var paths []string
 	for k := range registry.Entries {
 		paths = append(paths, k)
 	}
