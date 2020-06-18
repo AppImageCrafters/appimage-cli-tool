@@ -8,11 +8,10 @@ import (
 	"fmt"
 	"github.com/rainycape/dl"
 	"os"
-	"path/filepath"
 )
 
 type RemoveCmd struct {
-	Id string `arg name:"id" help:"Installation id or file name." type:"string"`
+	Target string `arg name:"id" help:"Installation id or file name." type:"string"`
 }
 
 func (cmd *RemoveCmd) Run(*Context) (err error) {
@@ -20,33 +19,26 @@ func (cmd *RemoveCmd) Run(*Context) (err error) {
 	if err != nil {
 		return err
 	}
+	defer registry.Close()
+
 	registry.Update()
 
-	fileName, ok := registry.Lookup(cmd.Id)
+	entry, ok := registry.Lookup(cmd.Target)
 	if !ok {
-		fileName = cmd.Id
+		return fmt.Errorf("application not found \"" + cmd.Target + "\"")
 	}
 
-	applicationsDir, err := utils.MakeApplicationsDirPath()
-	if err != nil {
-		return err
-	}
-	filePath := filepath.Join(applicationsDir, fileName)
-
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		return fmt.Errorf("application not found \"" + cmd.Id + "\"")
-	}
-
-	err = uninstallAppImage(filePath)
+	err = uninstallAppImage(entry.FilePath)
 	if err != nil {
 		fmt.Println("Desktop deregistration failed: " + err.Error())
 	}
 
-	err = os.Remove(filePath)
+	err = os.Remove(entry.FilePath)
 	if err != nil {
 		return fmt.Errorf("Unable to remove AppImage file: " + err.Error())
 	}
-	fmt.Println("Application removed: " + fileName)
+	fmt.Println("Application removed: " + entry.FilePath)
+	registry.Remove(entry.FilePath)
 	return err
 }
 

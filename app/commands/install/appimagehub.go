@@ -12,6 +12,10 @@ type AppImageHubRepo struct {
 }
 
 func NewAppImageHubRepo(target string) (Repo, error) {
+	if strings.HasPrefix(target, "https://www.appimagehub.com/p/") {
+		target = strings.Replace(target, "https://www.appimagehub.com/p/", "appimagehub:", 1)
+	}
+
 	if !strings.HasPrefix(target, "appimagehub:") {
 		return nil, InvalidTargetFormat
 	}
@@ -53,7 +57,8 @@ func (a AppImageHubRepo) GetLatestRelease() (*Release, error) {
 			Url:      link.Data,
 		}
 
-		if strings.HasSuffix(downloadLink.FileName, ".AppImage") {
+		if strings.HasSuffix(downloadLink.FileName, ".AppImage") ||
+			strings.HasSuffix(downloadLink.FileName, ".appimage") {
 			downloadLinks = append(downloadLinks, downloadLink)
 		}
 	}
@@ -71,4 +76,8 @@ func (a AppImageHubRepo) GetLatestRelease() (*Release, error) {
 func (a AppImageHubRepo) Download(binaryUrl *utils.BinaryUrl, targetPath string) (err error) {
 	err = utils.DownloadAppImage(binaryUrl.Url, targetPath)
 	return
+}
+
+func (a AppImageHubRepo) FallBackUpdateInfo() string {
+	return "ocs-v1-appimagehub-zsync|www.appimagehub.com/ocs/v1|" + a.ContentId + "|*.AppImage"
 }

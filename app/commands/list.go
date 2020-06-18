@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"github.com/juju/ansiterm"
 	"os"
+	"path/filepath"
 	"sort"
 )
 
@@ -31,7 +32,7 @@ func (r *ListCmd) Run(*Context) error {
 
 	var lines [][]string
 	for fileName, v := range registry.Entries {
-		line := []string{v.Repo, fileName, v.SHA1}
+		line := []string{v.Repo, filepath.Base(fileName), v.FileSha1}
 		lines = append(lines, line)
 	}
 	sort.Slice(lines, func(i int, j int) bool {

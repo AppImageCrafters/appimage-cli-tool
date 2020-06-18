@@ -4,6 +4,7 @@ import (
 	"appimage-manager/app/commands"
 	"appimage-manager/app/utils"
 	"fmt"
+	updateUtils "github.com/AppImageCrafters/appimage-update/util"
 	"os"
 )
 
@@ -20,6 +21,7 @@ type Repo interface {
 	Id() string
 	GetLatestRelease() (*Release, error)
 	Download(binaryUrl *utils.BinaryUrl, targetPath string) error
+	FallBackUpdateInfo() string
 }
 
 func (cmd *InstallCmd) Run(*commands.Context) (err error) {
@@ -72,10 +74,23 @@ func (cmd *InstallCmd) parseTarget() (Repo, error) {
 	return nil, InvalidTargetFormat
 }
 
-func (cmd *InstallCmd) addToRegistry(targetFilePath string, source Repo) {
+func (cmd *InstallCmd) addToRegistry(targetFilePath string, repo Repo) {
+	sha1, _ := utils.GetFileSHA1(targetFilePath)
+	updateInfo, _ := updateUtils.ReadUpdateInfo(targetFilePath)
+	if updateInfo == "" {
+		updateInfo = repo.FallBackUpdateInfo()
+	}
+
+	entry := utils.RegistryEntry{
+		FilePath:   targetFilePath,
+		Repo:       repo.Id(),
+		FileSha1:   sha1,
+		UpdateInfo: updateInfo,
+	}
+
 	registry, _ := utils.OpenRegistry()
 	if registry != nil {
-		_ = registry.Add(targetFilePath, source.Id())
+		_ = registry.Add(entry)
 		_ = registry.Close()
 	}
 }

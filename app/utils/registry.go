@@ -1,10 +1,8 @@
 package utils
 
 import (
-	"crypto/sha1"
-	"encoding/hex"
 	"encoding/json"
-	"io"
+	updateUtils "github.com/AppImageCrafters/appimage-update/util"
 	"io/ioutil"
 	"log"
 	"os"
@@ -13,8 +11,12 @@ import (
 )
 
 type RegistryEntry struct {
-	Repo string
-	SHA1 string
+	Repo       string
+	FileSha1   string
+	AppName    string
+	AppVersion string
+	FilePath   string
+	UpdateInfo string
 }
 
 type Registry struct {
@@ -59,27 +61,13 @@ func (registry *Registry) Close() error {
 	return nil
 }
 
-func (registry *Registry) Add(filePath string, id string) error {
-	sha1Checksum, err := getFileSha1Checksum(filePath)
-	if err != nil {
-		return err
-	}
-
-	if registry.Entries == nil {
-		registry.Entries = map[string]RegistryEntry{}
-	}
-
-	registry.Entries[filepath.Base(filePath)] = RegistryEntry{Repo: id, SHA1: sha1Checksum}
+func (registry *Registry) Add(entry RegistryEntry) error {
+	registry.Entries[entry.FilePath] = entry
 	return nil
 }
 
-func (registry *Registry) Get(fileName string) (entry RegistryEntry, ok bool) {
-	entry, ok = registry.Entries[fileName]
-	return entry, ok
-}
-
-func (registry *Registry) Remove(fileName string) {
-	delete(registry.Entries, fileName)
+func (registry *Registry) Remove(filePath string) {
+	delete(registry.Entries, filePath)
 }
 
 func (registry *Registry) Update() {
@@ -95,43 +83,66 @@ func (registry *Registry) Update() {
 
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), ".AppImage") {
-			_, ok := registry.Entries[f.Name()]
+			filePath := filepath.Join(applicationsDir, f.Name())
+			_, ok := registry.Entries[filePath]
 			if !ok {
-				_ = registry.Add(filepath.Join(applicationsDir, f.Name()), "")
+				entry := registry.createEntryFromFile(filePath)
+				_ = registry.Add(entry)
 			}
 		}
 	}
 
-	for fileName, _ := range registry.Entries {
-		filePath := filepath.Join(applicationsDir, fileName)
+	for filePath, _ := range registry.Entries {
 		if _, err := os.Stat(filePath); os.IsNotExist(err) {
-			registry.Remove(fileName)
+			registry.Remove(filePath)
 		}
 	}
 }
 
-func (registry *Registry) Lookup(id string) (string, bool) {
-	for fileName, entry := range registry.Entries {
-		if entry.Repo == id {
-			return fileName, true
+func (registry *Registry) addFile(filePath string) {
+	entry := registry.createEntryFromFile(filePath)
+	_ = registry.Add(entry)
+}
+
+func (registry *Registry) createEntryFromFile(filePath string) RegistryEntry {
+	fileSha1, _ := GetFileSHA1(filePath)
+	updateInfo, _ := updateUtils.ReadUpdateInfo(filePath)
+	entry := RegistryEntry{
+		Repo:       "",
+		FileSha1:   fileSha1,
+		AppName:    "",
+		AppVersion: "",
+		FilePath:   filePath,
+		UpdateInfo: updateInfo,
+	}
+	return entry
+}
+
+func (registry *Registry) Lookup(target string) (RegistryEntry, bool) {
+	for _, entry := range registry.Entries {
+		if entry.FileSha1 == target || entry.FilePath == target || entry.Repo == target {
+			return entry, true
 		}
 	}
 
-	return "", false
-}
+	if IsAppImageFile(target) {
+		entry := registry.createEntryFromFile(target)
+		_ = registry.Add(entry)
 
-func getFileSha1Checksum(filePath string) (string, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return "", err
+		return entry, true
+	} else {
+		applicationsDir, _ := MakeApplicationsDirPath()
+		target = filepath.Join(applicationsDir, target)
+
+		if IsAppImageFile(target) {
+			entry := registry.createEntryFromFile(target)
+			_ = registry.Add(entry)
+
+			return entry, true
+		}
 	}
 
-	sha1Checksum := sha1.New()
-	_, err = io.Copy(sha1Checksum, file)
-	if err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(sha1Checksum.Sum(nil)), nil
+	return RegistryEntry{}, false
 }
 
 func makeRegistryFilePath() (string, error) {

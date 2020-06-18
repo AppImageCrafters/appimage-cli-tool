@@ -1,12 +1,10 @@
 package commands
 
 import (
-	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
-
 	"appimage-manager/app/utils"
+	"errors"
+	"fmt"
+	updateUtils "github.com/AppImageCrafters/appimage-update/util"
 
 	"github.com/AppImageCrafters/appimage-update"
 )
@@ -18,6 +16,8 @@ type UpdateCmd struct {
 	All   bool `help:"Update all applications."`
 }
 
+var NoUpdateInfo = errors.New("there is no update information")
+
 func (cmd *UpdateCmd) Run(*Context) (err error) {
 	if cmd.All {
 		cmd.Targets, err = getAllTargets()
@@ -27,19 +27,19 @@ func (cmd *UpdateCmd) Run(*Context) (err error) {
 	}
 
 	for _, target := range cmd.Targets {
-		filePath, err := cmd.getBundleFilePath(target)
+		entry, err := cmd.getRegistryEntry(target)
+		if err != nil {
+			println(err)
+			continue
+		}
+
+		updateMethod, err := update.NewUpdateForUpdateString(entry.UpdateInfo, entry.FilePath)
 		if err != nil {
 			println(err.Error())
 			continue
 		}
 
-		updateMethod, err := update.NewUpdaterFor(filePath)
-		if err != nil {
-			println(err.Error())
-			continue
-		}
-
-		fmt.Println("Looking for updates of: ", filePath)
+		fmt.Println("Looking for updates of: ", entry.FilePath)
 		updateAvailable, err := updateMethod.Lookup()
 		if err != nil {
 			println(err.Error())
@@ -47,12 +47,12 @@ func (cmd *UpdateCmd) Run(*Context) (err error) {
 		}
 
 		if !updateAvailable {
-			fmt.Println("No updates were found for: ", filePath)
+			fmt.Println("No updates were found for: ", entry.FilePath)
 			continue
 		}
 
 		if cmd.Check {
-			fmt.Println("Update available for: ", filePath)
+			fmt.Println("Update available for: ", entry.FilePath)
 			continue
 		}
 
@@ -68,6 +68,27 @@ func (cmd *UpdateCmd) Run(*Context) (err error) {
 	return nil
 }
 
+func (cmd *UpdateCmd) getRegistryEntry(target string) (utils.RegistryEntry, error) {
+	registry, err := utils.OpenRegistry()
+	if err != nil {
+		return utils.RegistryEntry{}, err
+	}
+	defer registry.Close()
+
+	entry, _ := registry.Lookup(target)
+
+	if entry.UpdateInfo == "" {
+		entry.UpdateInfo, _ = updateUtils.ReadUpdateInfo(target)
+		entry.FilePath = target
+	}
+
+	if entry.UpdateInfo == "" {
+		return entry, NoUpdateInfo
+	} else {
+		return entry, nil
+	}
+}
+
 func getAllTargets() ([]string, error) {
 	registry, err := utils.OpenRegistry()
 	if err != nil {
@@ -81,36 +102,4 @@ func getAllTargets() ([]string, error) {
 	}
 
 	return paths, nil
-}
-
-func (cmd *UpdateCmd) getBundleFilePath(target string) (string, error) {
-	if strings.HasPrefix(target, "file://") {
-		cmd.Targets = cmd.Targets[7:]
-	}
-
-	if _, err := os.Stat(target); err == nil {
-		return target, nil
-	}
-
-	registry, err := utils.OpenRegistry()
-	if err != nil {
-		return "", err
-	}
-	registry.Update()
-
-	fileName, ok := registry.Lookup(target)
-	if !ok {
-		fileName = target
-	}
-
-	applicationsDir, err := utils.MakeApplicationsDirPath()
-	if err != nil {
-		return "", err
-	}
-	filePath := filepath.Join(applicationsDir, fileName)
-
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		return "", fmt.Errorf("application not found \"" + target + "\"")
-	}
-	return filePath, nil
 }

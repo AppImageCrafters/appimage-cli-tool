@@ -52,16 +52,6 @@ func NewGitHubRepo(target string) (repo Repo, err error) {
 func (g GitHubRepo) Id() string {
 	id := "github:" + g.User + "/" + g.Project
 
-	if g.Release != "" {
-		id += "/" + g.Release
-	} else {
-		id += "/latest"
-	}
-
-	if g.File != "" {
-		id += "/" + g.File
-	}
-
 	return id
 }
 
@@ -102,4 +92,21 @@ func (g GitHubRepo) GetLatestRelease() (*Release, error) {
 func (g GitHubRepo) Download(binaryUrl *utils.BinaryUrl, targetPath string) (err error) {
 	err = utils.DownloadAppImage(binaryUrl.Url, targetPath)
 	return
+}
+
+func (g GitHubRepo) FallBackUpdateInfo() string {
+	updateInfo := "gh-releases-direct|" + g.User + "|" + g.Project
+	if g.Release == "" {
+		updateInfo += "|latest"
+	} else {
+		updateInfo += "|" + g.Release
+	}
+
+	if g.File == "" {
+		updateInfo += "|*.AppImage"
+	} else {
+		updateInfo += "|" + g.File
+	}
+
+	return updateInfo
 }

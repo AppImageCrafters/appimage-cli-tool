@@ -6,6 +6,8 @@ import "C"
 
 import (
 	"bytes"
+	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
 	"github.com/manifoldco/promptui"
 	"github.com/rainycape/dl"
@@ -169,4 +171,57 @@ func MakeTargetFilePath(link *BinaryUrl) (string, error) {
 
 	filePath := filepath.Join(applicationsPath, link.FileName)
 	return filePath, nil
+}
+
+func GetFileSHA1(filePath string) (string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	sha1Checksum := sha1.New()
+	_, err = io.Copy(sha1Checksum, file)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(sha1Checksum.Sum(nil)), nil
+}
+
+func IsAppImageFile(filePath string) bool {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return false
+	}
+
+	return isAppImage1File(file) || isAppImage2File(file)
+}
+
+func isAppImage2File(file *os.File) bool {
+	return isElfFile(file) && fileHasBytesAt(file, []byte{0x41, 0x49, 0x02}, 8)
+}
+
+func isAppImage1File(file *os.File) bool {
+	return isISO9660(file) || fileHasBytesAt(file, []byte{0x41, 0x49, 0x01}, 8)
+}
+
+func isElfFile(file *os.File) bool {
+	return fileHasBytesAt(file, []byte{0x7f, 0x45, 0x4c, 0x46}, 0)
+}
+
+func isISO9660(file *os.File) bool {
+	for _, offset := range []int64{32769, 34817, 36865} {
+		if fileHasBytesAt(file, []byte{'C', 'D', '0', '0', '1'}, offset) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func fileHasBytesAt(file *os.File, expectedBytes []byte, offset int64) bool {
+	readBytes := make([]byte, len(expectedBytes))
+	_, _ = file.Seek(offset, 0)
+	_, _ = file.Read(readBytes)
+
+	return bytes.Compare(readBytes, expectedBytes) == 0
 }
