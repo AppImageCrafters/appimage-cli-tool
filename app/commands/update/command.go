@@ -1,12 +1,11 @@
-package commands
+package update
 
 import (
-	"appimage-manager/app/utils"
 	"errors"
 	"fmt"
-	updateUtils "github.com/AppImageCrafters/appimage-update/util"
 
-	"github.com/AppImageCrafters/appimage-update"
+	"appimage-manager/app/commands"
+	"appimage-manager/app/utils"
 )
 
 type UpdateCmd struct {
@@ -18,7 +17,7 @@ type UpdateCmd struct {
 
 var NoUpdateInfo = errors.New("there is no update information")
 
-func (cmd *UpdateCmd) Run(*Context) (err error) {
+func (cmd *UpdateCmd) Run(*commands.Context) (err error) {
 	if cmd.All {
 		cmd.Targets, err = getAllTargets()
 		if err != nil {
@@ -32,7 +31,7 @@ func (cmd *UpdateCmd) Run(*Context) (err error) {
 			continue
 		}
 
-		updateMethod, err := update.NewUpdateForUpdateString(entry.UpdateInfo, entry.FilePath)
+		updateMethod, err := NewUpdater(entry.UpdateInfo, entry.FilePath)
 		if err != nil {
 			println(err.Error())
 			continue
@@ -77,7 +76,7 @@ func (cmd *UpdateCmd) getRegistryEntry(target string) (utils.RegistryEntry, erro
 	entry, _ := registry.Lookup(target)
 
 	if entry.UpdateInfo == "" {
-		entry.UpdateInfo, _ = updateUtils.ReadUpdateInfo(target)
+		entry.UpdateInfo, _ = utils.ReadUpdateInfo(target)
 		entry.FilePath = target
 	}
 

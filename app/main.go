@@ -3,6 +3,7 @@ package main
 import (
 	"appimage-manager/app/commands"
 	"appimage-manager/app/commands/install"
+	"appimage-manager/app/commands/update"
 	"github.com/alecthomas/kong"
 )
 
@@ -13,7 +14,7 @@ var cli struct {
 	Install install.InstallCmd `cmd help:"Install an application."`
 	List    commands.ListCmd   `cmd help:"List installed applications."`
 	Remove  commands.RemoveCmd `cmd help:"Remove an application."`
-	Update  commands.UpdateCmd `cmd help:"Update an application."`
+	Update  update.UpdateCmd   `cmd help:"Update an application."`
 }
 
 func main() {

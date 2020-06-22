@@ -7,6 +7,7 @@ import "C"
 import (
 	"bytes"
 	"crypto/sha1"
+	"debug/elf"
 	"encoding/hex"
 	"fmt"
 	"github.com/manifoldco/promptui"
@@ -171,6 +172,31 @@ func MakeTargetFilePath(link *BinaryUrl) (string, error) {
 
 	filePath := filepath.Join(applicationsPath, link.FileName)
 	return filePath, nil
+}
+
+func ReadUpdateInfo(appImagePath string) (string, error) {
+	elfFile, err := elf.Open(appImagePath)
+	if err != nil {
+		panic("Unable to open target: \"" + appImagePath + "\"." + err.Error())
+	}
+
+	updInfo := elfFile.Section(".upd_info")
+	if updInfo == nil {
+		panic("Missing update section on target elf ")
+	}
+	sectionData, err := updInfo.Data()
+
+	if err != nil {
+		panic("Unable to parse update section: " + err.Error())
+	}
+
+	str_end := bytes.Index(sectionData, []byte("\000"))
+	if str_end == -1 || str_end == 0 {
+		return "", fmt.Errorf("No update information found in: " + appImagePath)
+	}
+
+	update_info := string(sectionData[:str_end])
+	return update_info, nil
 }
 
 func GetFileSHA1(filePath string) (string, error) {

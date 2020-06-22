@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/AppImageCrafters/appimage-update v0.1.3
+	github.com/AppImageCrafters/zsync v0.1.1
 	github.com/alecthomas/kong v0.2.9
 	github.com/antchfx/xmlquery v1.2.4
 	github.com/google/go-github/v31 v31.0.0
