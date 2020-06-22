@@ -1,31 +1,20 @@
 package install
 
 import (
-	"appimage-manager/app/commands"
-	"appimage-manager/app/utils"
 	"fmt"
-	updateUtils "github.com/AppImageCrafters/appimage-update/util"
 	"os"
+
+	"appimage-manager/app/commands"
+	"appimage-manager/app/repos"
+	"appimage-manager/app/utils"
 )
 
 type InstallCmd struct {
 	Target string `arg name:"target" help:"Installation target." type:"string"`
 }
 
-type Release struct {
-	Tag   string
-	files []utils.BinaryUrl
-}
-
-type Repo interface {
-	Id() string
-	GetLatestRelease() (*Release, error)
-	Download(binaryUrl *utils.BinaryUrl, targetPath string) error
-	FallBackUpdateInfo() string
-}
-
 func (cmd *InstallCmd) Run(*commands.Context) (err error) {
-	repo, err := cmd.parseTarget()
+	repo, err := repos.ParseTarget(cmd.Target)
 	if err != nil {
 		return err
 	}
@@ -35,7 +24,7 @@ func (cmd *InstallCmd) Run(*commands.Context) (err error) {
 		return err
 	}
 
-	selectedBinary, err := utils.PromptBinarySelection(release.files)
+	selectedBinary, err := utils.PromptBinarySelection(release.Files)
 	if err != nil {
 		return err
 	}
@@ -60,23 +49,9 @@ func (cmd *InstallCmd) Run(*commands.Context) (err error) {
 	return
 }
 
-func (cmd *InstallCmd) parseTarget() (Repo, error) {
-	repo, err := NewGitHubRepo(cmd.Target)
-	if err == nil {
-		return repo, nil
-	}
-
-	repo, err = NewAppImageHubRepo(cmd.Target)
-	if err == nil {
-		return repo, nil
-	}
-
-	return nil, InvalidTargetFormat
-}
-
-func (cmd *InstallCmd) addToRegistry(targetFilePath string, repo Repo) {
+func (cmd *InstallCmd) addToRegistry(targetFilePath string, repo repos.Repo) {
 	sha1, _ := utils.GetFileSHA1(targetFilePath)
-	updateInfo, _ := updateUtils.ReadUpdateInfo(targetFilePath)
+	updateInfo, _ := utils.ReadUpdateInfo(targetFilePath)
 	if updateInfo == "" {
 		updateInfo = repo.FallBackUpdateInfo()
 	}

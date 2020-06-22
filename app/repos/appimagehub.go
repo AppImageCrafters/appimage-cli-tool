@@ -1,4 +1,4 @@
-package install
+package repos
 
 import (
 	"appimage-manager/app/utils"
