@@ -10,7 +10,8 @@ import (
 )
 
 type RemoveCmd struct {
-	Target string `arg name:"id" help:"Installation id or file name." type:"string"`
+	Target   string `arg name:"id" help:"Installation id or file name." type:"string"`
+	KeepFile bool   `help:"Remove only the application desktop entry."`
 }
 
 func (cmd *RemoveCmd) Run(*Context) (err error) {
@@ -29,7 +30,11 @@ func (cmd *RemoveCmd) Run(*Context) (err error) {
 
 	err = removeDesktopIntegration(entry.FilePath)
 	if err != nil {
-		fmt.Println("Desktop deregistration failed: " + err.Error())
+		fmt.Println("Desktop integration removal failed: " + err.Error())
+	}
+
+	if cmd.KeepFile {
+		return nil
 	}
 
 	err = os.Remove(entry.FilePath)
