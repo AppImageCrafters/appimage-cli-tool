@@ -2,7 +2,36 @@
 
 A CLI app to manage your AppImage collection.
 
-## WIP
+## Installation 
 
-This project is under intesive development (contributions are welcome).
-Find us at #apppimage at freenode.org IRC 
+```shell script
+sudo wget https://github.com/AppImageCrafters/appimage-manager/releases/download/v0.1.0/app -O /usr/local/bin
+sudo chmod +x /usr/local/bin
+```
+
+## Usage
+```shell script
+Usage: app <command>
+
+Flags:
+  --help     Show context-sensitive help.
+  --debug    Enable debug mode.
+
+Commands:
+  search <query>
+    Search applications in the store.
+
+  install <target>
+    Install an application.
+
+  list
+    List installed applications.
+
+  remove <id>
+    Remove an application.
+
+  update [<targets> ...]
+    Update an application.
+
+Run "app <command> --help" for more information on a command.
+```
