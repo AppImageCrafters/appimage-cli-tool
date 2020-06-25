@@ -14,6 +14,11 @@ type InstallCmd struct {
 }
 
 func (cmd *InstallCmd) Run(*commands.Context) (err error) {
+	if _, err := os.Stat(cmd.Target); err == nil {
+		cmd.createDesktopIntegration(cmd.Target)
+		return nil
+	}
+
 	repo, err := repos.ParseTarget(cmd.Target)
 	if err != nil {
 		return err
@@ -45,7 +50,7 @@ func (cmd *InstallCmd) Run(*commands.Context) (err error) {
 
 	cmd.addToRegistry(targetFilePath, repo)
 
-	cmd.createDesktopIntegration(err, targetFilePath)
+	cmd.createDesktopIntegration(targetFilePath)
 
 	return
 }
@@ -71,7 +76,7 @@ func (cmd *InstallCmd) addToRegistry(targetFilePath string, repo repos.Repo) {
 	}
 }
 
-func (cmd *InstallCmd) createDesktopIntegration(err error, targetFilePath string) {
+func (cmd *InstallCmd) createDesktopIntegration(targetFilePath string) {
 	libAppImage, err := utils.NewLibAppImageBindings()
 	if err != nil {
 		fmt.Println("Integration failed: missing libappimage.so")
