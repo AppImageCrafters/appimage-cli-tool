@@ -6,7 +6,6 @@ import "C"
 import (
 	"appimage-manager/app/utils"
 	"fmt"
-	"github.com/rainycape/dl"
 	"os"
 )
 
@@ -28,7 +27,7 @@ func (cmd *RemoveCmd) Run(*Context) (err error) {
 		return fmt.Errorf("application not found \"" + cmd.Target + "\"")
 	}
 
-	err = uninstallAppImage(entry.FilePath)
+	err = removeDesktopIntegration(entry.FilePath)
 	if err != nil {
 		fmt.Println("Desktop deregistration failed: " + err.Error())
 	}
@@ -42,32 +41,15 @@ func (cmd *RemoveCmd) Run(*Context) (err error) {
 	return err
 }
 
-func uninstallAppImage(filePath string) error {
-	lib, err := dl.Open("libappimage.so", 0)
-	if err != nil {
-		return fmt.Errorf("desktop integration not available")
-	}
-	defer lib.Close()
-
-	var appimage_shall_not_be_integrated func(path *C.char) int
-	err = lib.Sym("appimage_shall_not_be_integrated", &appimage_shall_not_be_integrated)
+func removeDesktopIntegration(filePath string) error {
+	libAppImage, err := utils.NewLibAppImageBindings()
 	if err != nil {
 		return err
 	}
 
-	var appimage_unregister_in_system func(path *C.char, verbose int) int
-	err = lib.Sym("appimage_unregister_in_system", &appimage_unregister_in_system)
-	if err != nil {
-		return err
-	}
-
-	if appimage_shall_not_be_integrated(C.CString(filePath)) != 0 {
+	if libAppImage.ShallNotBeIntegrated(filePath) {
 		return nil
 	}
 
-	if appimage_unregister_in_system(C.CString(filePath), 1) != 0 {
-		return fmt.Errorf("deregistration failed")
-	}
-
-	return nil
+	return libAppImage.Unregister(filePath)
 }

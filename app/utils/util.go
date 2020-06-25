@@ -11,7 +11,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/manifoldco/promptui"
-	"github.com/rainycape/dl"
 	"github.com/schollz/progressbar/v3"
 	"io"
 	"net/http"
@@ -132,36 +131,6 @@ func PromptBinarySelection(downloadLinks []BinaryUrl) (result *BinaryUrl, err er
 	}
 
 	return &downloadLinks[i], nil
-}
-
-func Integrate(filePath string) error {
-	lib, err := dl.Open("libappimage.so", 0)
-	if err != nil {
-		return fmt.Errorf("desktop integration not available")
-	}
-	defer lib.Close()
-
-	var appimage_shall_not_be_integrated func(path *C.char) int
-	err = lib.Sym("appimage_shall_not_be_integrated", &appimage_shall_not_be_integrated)
-	if err != nil {
-		return err
-	}
-
-	var appimage_register_in_system func(path *C.char, verbose int) int
-	err = lib.Sym("appimage_register_in_system", &appimage_register_in_system)
-	if err != nil {
-		return err
-	}
-
-	if appimage_shall_not_be_integrated(C.CString(filePath)) != 0 {
-		return nil
-	}
-
-	if appimage_register_in_system(C.CString(filePath), 1) != 0 {
-		return fmt.Errorf("registration failed")
-	}
-
-	return nil
 }
 
 func MakeTargetFilePath(link *BinaryUrl) (string, error) {

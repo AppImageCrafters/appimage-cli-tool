@@ -45,7 +45,8 @@ func (cmd *InstallCmd) Run(*commands.Context) (err error) {
 
 	cmd.addToRegistry(targetFilePath, repo)
 
-	err = cmd.makeDesktopIntegration(err, targetFilePath)
+	cmd.createDesktopIntegration(err, targetFilePath)
+
 	return
 }
 
@@ -70,13 +71,18 @@ func (cmd *InstallCmd) addToRegistry(targetFilePath string, repo repos.Repo) {
 	}
 }
 
-func (cmd *InstallCmd) makeDesktopIntegration(err error, targetFilePath string) error {
-	fmt.Println("Integrating with the desktop environment")
-	err = utils.Integrate(targetFilePath)
+func (cmd *InstallCmd) createDesktopIntegration(err error, targetFilePath string) {
+	libAppImage, err := utils.NewLibAppImageBindings()
+	if err != nil {
+		fmt.Println("Integration failed: missing libappimage.so")
+		return
+	}
+
+	fmt.Println("Creating menu entry and mime-types integrations")
+	err = libAppImage.Register(targetFilePath)
 	if err != nil {
 		fmt.Println("Integration failed: " + err.Error())
 	} else {
 		fmt.Println("Integration completed")
 	}
-	return err
 }
