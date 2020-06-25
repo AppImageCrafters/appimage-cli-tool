@@ -1,12 +1,10 @@
 package commands
 
-// #include <stdio.h>
-// #include <stdlib.h>
-import "C"
 import (
-	"appimage-manager/app/utils"
 	"fmt"
 	"os"
+
+	"appimage-manager/app/utils"
 )
 
 type RemoveCmd struct {
