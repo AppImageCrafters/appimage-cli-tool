@@ -3,7 +3,7 @@ script:
   - rm AppDir -rf | true
   - mkdir -p AppDir/bin AppDir/usr/share/icons/hicolor/256x256/apps/
   - cp ./dist/app AppDir/bin
-  - wget https://findicons.com/files/icons/2166/oxygen/128/utilities_terminal.png -O AppDir/usr/share/icons/hicolor/256x256/apps/utilities_terminal.png
+  - wget https://findicons.com/files/icons/2166/oxygen/128/utilities_terminal.png -O AppDir/usr/share/icons/hicolor/256x256/apps/app_icon.png
 
 AppDir:
   path: ./AppDir
@@ -11,7 +11,7 @@ AppDir:
   app_info:
     id: org.appimage-crafters.appimage-manager
     name: app
-    icon: utilities-terminal
+    icon: app_icon
     version: 0.1.0
     exec: bin/app
     exec_args: $@
