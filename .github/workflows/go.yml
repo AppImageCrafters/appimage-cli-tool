@@ -33,7 +33,12 @@ jobs:
       - name: Build
         run: go build -o ./dist/app -v ./app
 
+      - uses: AppImageCrafters/build-appimage-action@master
+        id: pack
+        with:
+          recipe: 'appimage-builder.yml'
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          path: ./dist/app
+          path: ${{steps.pack.outputs.appimage_file}}
