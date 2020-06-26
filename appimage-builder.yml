@@ -1,8 +1,9 @@
 version: 1
 script:
   - rm AppDir -rf | true
-  - mkdir -p AppDir/bin
+  - mkdir -p AppDir/bin AppDir/usr/share/icons/hicolor/256x256/apps/
   - cp ./dist/app AppDir/bin
+  - wget https://findicons.com/files/icons/2166/oxygen/128/utilities_terminal.png -O AppDir/usr/share/icons/hicolor/256x256/apps/utilities_terminal.png
 
 AppDir:
   path: ./AppDir
