@@ -60,6 +60,14 @@ func (cmd *UpdateCmd) Run(*commands.Context) (err error) {
 			continue
 		}
 
+		signingEntity, _ := utils.VerifySignature(result)
+		if signingEntity != nil {
+			fmt.Println("AppImage signed by:")
+			for _, v := range signingEntity.Identities {
+				fmt.Println("\t", v.Name)
+			}
+		}
+
 		fmt.Println("Update downloaded to: " + result)
 	}
 

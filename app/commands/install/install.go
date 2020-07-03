@@ -52,6 +52,14 @@ func (cmd *InstallCmd) Run(*commands.Context) (err error) {
 
 	cmd.createDesktopIntegration(targetFilePath)
 
+	signingEntity, _ := utils.VerifySignature(targetFilePath)
+	if signingEntity != nil {
+		fmt.Println("AppImage signed by:")
+		for _, v := range signingEntity.Identities {
+			fmt.Println("\t", v.Name)
+		}
+	}
+
 	return
 }
 

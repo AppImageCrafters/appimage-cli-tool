@@ -15,4 +15,5 @@ require (
 	github.com/schollz/progressbar/v3 v3.3.3
 	github.com/stretchr/testify v1.6.1
 	github.com/tidwall/gjson v1.6.0
+	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
 )
