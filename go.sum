@@ -6,10 +6,14 @@ github.com/AppImageCrafters/appimage-update v0.1.2 h1:gNsJVVlBkdoJdWDsdyWPsPHWhR
 github.com/AppImageCrafters/appimage-update v0.1.2/go.mod h1:PxSWD/Ci1Vntq5AVWym9Jwsn0fYIb1eNOzMUT0OKsd0=
 github.com/AppImageCrafters/appimage-update v0.1.3 h1:ywbn2s5znyGXuKgvOUmiAARArMyF1KOoUKr6UmXkL2M=
 github.com/AppImageCrafters/appimage-update v0.1.3/go.mod h1:ve6bfuz21ExlTbk/1Ohy1HpfVDaW4z74bQbosihVvKQ=
+github.com/AppImageCrafters/appimage-update v0.1.5 h1:0+bSRVF0sfKh9ofdqwdYogNODDQMfEsn1/gg32A0A40=
+github.com/AppImageCrafters/appimage-update v0.1.5/go.mod h1:jmGN6RN8P4RuRwwhDekFO89ZcrfnHL3pt9ripb1/jkQ=
 github.com/AppImageCrafters/zsync v0.1.0 h1:4dkA2pAXZUuWUNryaqcO6vO3oGDz7jIWhleM9CZ6wKg=
 github.com/AppImageCrafters/zsync v0.1.0/go.mod h1:BTERniiRlHxk1jlUQkMZHU8OyQMWSbl/DJFrqvd3uaU=
 github.com/AppImageCrafters/zsync v0.1.1 h1:uhHcq81ExzEIl/FEuvFqfQ13jnERsQQaBp3KJzAOm+U=
 github.com/AppImageCrafters/zsync v0.1.1/go.mod h1:BTERniiRlHxk1jlUQkMZHU8OyQMWSbl/DJFrqvd3uaU=
+github.com/AppImageCrafters/zsync v0.1.4 h1:auVtVzj+3qII5WXBVPIuTq7YIHCmr9vlWJJEvkVloaA=
+github.com/AppImageCrafters/zsync v0.1.4/go.mod h1:GlIuJzFA+iid38KFqzSka8TVDzTLW0u2w4NzvPmeYg0=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/alecthomas/kong v0.2.9 h1:WGuTS/N2/NQ/9LymVqpr1ifZ4EEkQPvwFHqZs6ak5IU=
 github.com/alecthomas/kong v0.2.9/go.mod h1:kQOmtJgV+Lb4aj+I2LEn40cbtawdWJ9Y8QLq+lElKxE=
@@ -35,6 +39,9 @@ github.com/diskfs/go-diskfs v1.0.1-0.20200223082018-e1e7ed3e8059 h1:cTbkIihDv30G
 github.com/diskfs/go-diskfs v1.0.1-0.20200223082018-e1e7ed3e8059/go.mod h1:l5/91JbSThbOvz9ns03j6OKpc1t4gQXb+0c8ZtV5Kzs=
 github.com/diskfs/go-diskfs v1.1.1 h1:rMjLpaydtXGVZb7mdkRGK1+//30i76nKAit89zUzeaI=
 github.com/diskfs/go-diskfs v1.1.1/go.mod h1:afUPxxu+x1snp4aCY2bKR0CoZ/YFJewV3X2UEr2nPZE=
+github.com/glycerine/goconvey v0.0.0-20190410193231-58a59202ab31/go.mod h1:Ogl1Tioa0aV7gstGFO7KhffUsb9M4ydbEbbxpcEDc24=
+github.com/glycerine/rbuf v0.0.0-20190314090850-75b78581bebe h1:S7HF/JKUdDrsd66htKdBOt/t3WvhU3l8EXe0U3WxEDA=
+github.com/glycerine/rbuf v0.0.0-20190314090850-75b78581bebe/go.mod h1:BOGkN1CszB3i4g9xn96RH4t5uXnxJjnC5/RWJ1Wx7GM=
 github.com/golang/dl v0.0.0-20200601221412-a954fa24b3e5 h1:yKUHMhCLATw18FJiv9NN7Edh/Yq4XN8fPmRg7aq5/Qw=
 github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e h1:1r7pUrabqp18hOBcwBwiTsbnFeTZHV9eER/QT5JVZxY=
 github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e/go.mod h1:cIg4eruTrX1D+g88fzRXU5OdNfaM+9IcxsU14FzY7Hc=
@@ -46,9 +53,11 @@ github.com/google/go-querystring v1.0.0/go.mod h1:odCYkC5MyYFN7vkCjXpyrEuKhc/BUO
 github.com/google/renameio v0.1.0/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm40UhjYkI=
 github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
 github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00/go.mod h1:wJfORRmW1u3UXTncJ5qlYoELFm8eSnnEO6hX4iZ3EWY=
 github.com/gordonklaus/ineffassign v0.0.0-20190601041439-ed7b1b5ee0f8/go.mod h1:cuNKsD1zp2v6XfE/orVX2QE1LC+i254ceGcVeDT3pTU=
 github.com/jgautheron/goconst v0.0.0-20170703170152-9740945f5dcb/go.mod h1:82TxjOpWQiPmywlbIaB2ZkqJoSYJdLGPgAJDvM3PbKc=
 github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a/go.mod h1:yL958EeXv8Ylng6IfnvG4oflryUi3vgA3xPs9hmII1s=
+github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVYBRgL+9YlvaHOwJU=
 github.com/juju/ansiterm v0.0.0-20180109212912-720a0952cc2a h1:FaWFmfWdAUKbSCtOU2QjDaorUexogfaMgbipgYATUMU=
 github.com/juju/ansiterm v0.0.0-20180109212912-720a0952cc2a/go.mod h1:UJSiEoRfvx3hP73CvoARgeLjaIOjybY9vj8PUPPFGeU=
 github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213/go.mod h1:vNUNkEQ1e29fT/6vq2aBdFsgNPmy8qMdSay1npru+Sw=
@@ -95,6 +104,7 @@ github.com/schollz/progressbar/v3 v3.3.3 h1:woop83iT9IwNMhawXBgHTlAAOwUj4Nnr1RvX
 github.com/schollz/progressbar/v3 v3.3.3/go.mod h1:N/820QRS3ua9DhrVnLShsNgAEKNYFd89Cf5syXfqeyQ=
 github.com/sirupsen/logrus v1.6.0 h1:UBcNElsrwanuuMsnGSlYmtmgbb23qDR5dG+6X6Oo89I=
 github.com/sirupsen/logrus v1.6.0/go.mod h1:7uNnSEd1DgxDLC74fIahvMZmmYsHGZGEOFrfsX/uA88=
+github.com/smallnest/ringbuffer v0.0.0-20200331140504-3a38e8060b89/go.mod h1:wIpUJ8WEUx959cAgIwpDuHUcE7aexxxYNcvXUT08L90=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
