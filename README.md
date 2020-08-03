@@ -1,11 +1,11 @@
-# app-manager
+# appimage-manager
 
 A CLI app to manage your AppImage collection.
 
 ## Installation 
 
 ```shell script
-sudo wget https://github.com/AppImageCrafters/app-manager/releases/download/v0.1.0/app -O /usr/local/bin/app
+sudo wget https://github.com/AppImageCrafters/appimage-manager/releases/download/v0.1.0/app -O /usr/local/bin/app
 sudo chmod +x /usr/local/bin/app
 ```
 
