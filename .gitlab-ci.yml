@@ -1,0 +1,10 @@
+build:
+  image: golang
+  script:
+    - go get -v -t -d ./...
+    - go build -o ./dist/app -v ./app
+    - mv ./dist/app ./dist/appimage-manager-$(git describe)
+  artifacts:
+    paths:
+      - ./dist/appimage-manager*
+    expire_in: 1 year
