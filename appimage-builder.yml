@@ -1,7 +1,7 @@
 version: 1
 script:
   - rm AppDir -rf | true
-  - mkdir -p AppDir/bin AppDir/usr/share/icons/hicolor/256x256/apps/
+  - mkdir -p AppDir/bin AppDir/usr/share/icons/hicolor/scalable/apps/
   - cp ./dist/app AppDir/bin
   - wget https://appimage.org/images/logo3.svg -O AppDir/usr/share/icons/hicolor/scalable/apps/appimage-manager.svg
 
