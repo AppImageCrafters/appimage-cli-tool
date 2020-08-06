@@ -1,2 +1,6 @@
+get-deps:
+	go get -v -t -d ./...
+build:
+	go build -o ./dist/app -v ./app
 install:
-	install ./dist/app /usr/local/bin/app
+	install ./app*.AppImage /usr/local/bin/app

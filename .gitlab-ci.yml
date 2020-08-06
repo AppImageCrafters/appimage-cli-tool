@@ -16,7 +16,7 @@ build:
     expire_in: 1 year
 
 distro-pack:
-  image: ubuntu
+  image: appimagecrafters/appimage-builder
   stage: pack
   variables:
     DEBIAN_FRONTEND: noninteractive
@@ -26,7 +26,11 @@ distro-pack:
     - apt-get update -y
     - apt-get install -y checkinstall alien
   script:
-    - checkinstall --install=no -y --type=debian --pkgname=appimage-manager --pkgversion=0.1.2-$(git describe) --backup=no --maintainer=contact@azubieta.net --pkglicense=MIT
+    # Pack into an AppImage
+    - appimage-builder --skip-test --recipe=appimage-builder.yml
+    # Pack AppImage into deb
+    - checkinstall --install=no -y --type=debian --pkgname=appimage-manager --pkgversion=0.1.2 --backup=no --maintainer=contact@azubieta.net --pkglicense=MIT
+    # Transform deb into rpm
     - alien --to-rpm appimage-manager*.deb
   artifacts:
     paths:
