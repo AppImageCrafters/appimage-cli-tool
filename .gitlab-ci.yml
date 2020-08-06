@@ -1,10 +1,34 @@
+stages:
+  - build
+  - pack
+  - test
+
 build:
   image: golang
+  stage: build
   script:
     - go get -v -t -d ./...
     - go build -o ./dist/app -v ./app
-    - mv ./dist/app ./dist/appimage-manager-$(git describe)
+    - cp ./dist/app ./dist/appimage-manager-$(git describe)
   artifacts:
     paths:
-      - ./dist/appimage-manager*
+      - ./dist
+    expire_in: 1 year
+
+distro-pack:
+  image: ubuntu
+  stage: pack
+  variables:
+    DEBIAN_FRONTEND: noninteractive
+  dependencies:
+    - build
+  before_script:
+    - apt-get update -y
+    - apt-get install -y checkinstall alien
+  script:
+    - checkinstall --install=no -y --type=debian --pkgname=appimage-manager --pkgversion=0.1.2-$(git describe) --backup=no --maintainer=contact@azubieta.net --pkglicense=MIT
+    - alien --to-rpm appimage-manager*.deb
+  artifacts:
+    paths:
+      - "appimage-manager*"
     expire_in: 1 year
