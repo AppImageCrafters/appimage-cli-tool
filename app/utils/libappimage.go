@@ -24,13 +24,24 @@ type LibAppImage interface {
 	Close()
 }
 
+func loadLibAppImage() (*dl.DL, error) {
+	lib, err := dl.Open("libappimage.so.1.0", 0)
+	if err == nil {
+		return lib, nil
+	}
+
+	lib, err = dl.Open("libappimage.so", 0)
+	if err == nil {
+		return lib, nil
+	}
+
+	return nil, fmt.Errorf("libappimage not found, desktop integration is disabled")
+}
+
 func NewLibAppImageBindings() (LibAppImage, error) {
 	bindings := libAppImageBind{}
 	var err error
-	bindings.lib, err = dl.Open("libappimage.so", 0)
-	if err != nil {
-		return nil, fmt.Errorf("desktop integration not available")
-	}
+	bindings.lib, err = loadLibAppImage()
 
 	err = bindings.lib.Sym("appimage_shall_not_be_integrated", &bindings.appimage_shall_not_be_integrated)
 	if err != nil {
