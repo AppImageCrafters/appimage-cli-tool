@@ -29,7 +29,7 @@ distro-pack:
     # Pack into an AppImage
     - appimage-builder --skip-test --recipe=appimage-builder.yml
     # Pack AppImage into deb
-    - checkinstall --install=no -y --type=debian --pkgname=appimage-manager --pkgversion=0.1.2 --backup=no --maintainer=contact@azubieta.net --pkglicense=MIT
+    - checkinstall --install=no -y --type=debian --pkgname=appimage-manager --pkgversion=0.1.3 --backup=no --maintainer=contact@azubieta.net --pkglicense=MIT
     # Transform deb into rpm
     - alien --to-rpm appimage-manager*.deb
   artifacts:
