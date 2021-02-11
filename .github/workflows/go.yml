@@ -41,7 +41,7 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          path: '${{steps.pack.outputs.appimage_file}}*'
+          path: './*.AppImage'
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2

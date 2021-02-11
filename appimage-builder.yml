@@ -38,6 +38,6 @@ AppDir:
 
 
 AppImage:
-  update-information: 'gh-releases-zsync|AppImageCrafters|appimage-cli-tool|latest|cmd-*x86_64.AppImage.zsync'
+  update-information: 'gh-releases-zsync|AppImageCrafters|appimage-cli-tool|latest|appimage-cli-tool-*x86_64.AppImage.zsync'
   sign-key: None
   arch: x86_64
