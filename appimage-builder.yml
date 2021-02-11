@@ -10,7 +10,7 @@ AppDir:
 
   app_info:
     id: org.appimage-crafters.appimage-cli-tool
-    name: cmd
+    name: appimage-cli-tool
     icon: appimage-cli-tool
     version: 0.1.0
     exec: bin/appimage-cli-tool
