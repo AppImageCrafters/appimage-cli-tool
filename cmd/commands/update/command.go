@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"appimage-manager/app/commands"
-	"appimage-manager/app/utils"
+	"appimage-cli-tool/cmd/commands"
+	"appimage-cli-tool/internal/utils"
 )
 
 type UpdateCmd struct {

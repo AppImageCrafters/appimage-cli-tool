@@ -29,7 +29,7 @@ jobs:
           fi
 
       - name: Build
-        run: go build -o ./dist/app -v ./app
+        run: go build -o ./dist/appimage-cli-tool -v ./cmd
 
       - name: Update Release
         uses: johnwbyrd/update-release@v1.0.0
@@ -37,9 +37,6 @@ jobs:
           # Your Github token; try \$\{\{ secrets.GITHUB_TOKEN \}\} if your build lasts less than an hour, or create your own secret token with repository access if your build requires longer than an hour.
           token: ${{ secrets.GITHUB_TOKEN }}
           # Paths to built files to be released. May be absolute or relative to \$\{\{ github.workspace \}\}.
-          files: ./dist/app
+          files: ./dist/appimage-cli-tool
           # The name of the release to be created. A reasonable looking release name will be created from the current \$\{\{ github.ref \}\} if this input is not supplied.
           release: continuous
-          message: # optional
-          # Should the release, if created, be marked as a prerelease?  Such releases are generally publicly visible.
-          prerelease: # optional, default is true

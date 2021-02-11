@@ -2,18 +2,18 @@ version: 1
 script:
   - rm AppDir -rf | true
   - mkdir -p AppDir/bin AppDir/usr/share/icons/hicolor/scalable/apps/
-  - cp ./dist/app AppDir/bin
-  - wget https://appimage.org/images/logo3.svg -O AppDir/usr/share/icons/hicolor/scalable/apps/appimage-manager.svg
+  - cp ./dist/cmd AppDir/bin/appimage-cli-tool
+  - cp assets/appimage-cli-tool.svg AppDir/usr/share/icons/hicolor/scalable/apps/
 
 AppDir:
   path: ./AppDir
 
   app_info:
-    id: org.appimage-crafters.appimage-manager
-    name: app
-    icon: appimage-manager
+    id: org.appimage-crafters.appimage-cli-tool
+    name: cmd
+    icon: appimage-cli-tool
     version: 0.1.0
-    exec: bin/app
+    exec: bin/appimage-cli-tool
     exec_args: $@
 
   apt:
@@ -38,6 +38,6 @@ AppDir:
 
 
 AppImage:
-  update-information: 'gh-releases-zsync|AppImageCrafters|appimage-manager|latest|app-*x86_64.AppImage.zsync'
+  update-information: 'gh-releases-zsync|AppImageCrafters|appimage-cli-tool|latest|cmd-*x86_64.AppImage.zsync'
   sign-key: None
   arch: x86_64

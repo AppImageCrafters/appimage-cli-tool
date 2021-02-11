@@ -1,11 +1,9 @@
 package repos
 
 import (
+	"appimage-cli-tool/internal/utils"
 	"context"
 	"strings"
-
-	"appimage-manager/app/utils"
-
 	"github.com/google/go-github/v31/github"
 )
 

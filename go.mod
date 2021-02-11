@@ -1,4 +1,4 @@
-module appimage-manager
+module appimage-cli-tool
 
 go 1.14
 

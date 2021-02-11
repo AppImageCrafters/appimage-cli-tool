@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"appimage-manager/app/utils"
+	"appimage-cli-tool/internal/utils"
 	"bytes"
 	"fmt"
 	"github.com/juju/ansiterm"

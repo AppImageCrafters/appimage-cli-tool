@@ -1,10 +1,9 @@
 package commands
 
 import (
+	"appimage-cli-tool/internal/utils"
 	"fmt"
 	"os"
-
-	"appimage-manager/app/utils"
 )
 
 type RemoveCmd struct {
