@@ -2,7 +2,7 @@ version: 1
 script:
   - rm AppDir -rf | true
   - mkdir -p AppDir/bin AppDir/usr/share/icons/hicolor/scalable/apps/
-  - cp ./dist/cmd AppDir/bin/appimage-cli-tool
+  - cp ./dist/appimage-cli-tool AppDir/bin
   - cp assets/appimage-cli-tool.svg AppDir/usr/share/icons/hicolor/scalable/apps/
 
 AppDir:
