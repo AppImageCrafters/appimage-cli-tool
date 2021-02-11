@@ -10,7 +10,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
 
       - name: Set up Go 1.x
@@ -37,6 +37,8 @@ jobs:
         id: pack
         with:
           recipe: 'appimage-builder.yml'
+        env:
+          APPIMAGE_CLI_TOOL_VERSION: 0.1.4
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
