@@ -12,7 +12,7 @@ AppDir:
     id: org.appimage-crafters.appimage-cli-tool
     name: appimage-cli-tool
     icon: appimage-cli-tool
-    version: 0.1.0
+    version: 0.1.2
     exec: bin/appimage-cli-tool
     exec_args: $@
 
