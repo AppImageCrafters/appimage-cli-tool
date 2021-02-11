@@ -24,7 +24,7 @@ distro-pack:
     - build
   before_script:
     - apt-get update -y
-    - apt-get install -y checkinstall alien
+    - apt-get install -y checkinstall alien git
   script:
     - export APPIMAGE_CLI_TOOL_VERSION=$(git describe)
     # Pack into an AppImage
