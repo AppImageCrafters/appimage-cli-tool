@@ -8,8 +8,8 @@ build:
   stage: build
   script:
     - go get -v -t -d ./...
-    - go build -o ./dist/cmd -v ./cmd
-    - cp ./dist/cmd ./dist/appimage_cli_tool-$(git describe)
+    - go build -o ./dist/appimage-cli-tool -v ./cmd
+    - cp ./dist/appimage-cli-tool ./dist/appimage_cli_tool-$(git describe)
   artifacts:
     paths:
       - ./dist
