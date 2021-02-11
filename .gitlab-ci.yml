@@ -20,16 +20,17 @@ distro-pack:
   stage: pack
   variables:
     DEBIAN_FRONTEND: noninteractive
+    APPIMAGE_CLI_TOOL_VERSION: 0.1.4
   dependencies:
     - build
   before_script:
     - apt-get update -y
-    - apt-get install -y checkinstall alien
+    - apt-get install -y checkinstall alien git
   script:
     # Pack into an AppImage
     - appimage-builder --skip-test --recipe=appimage-builder.yml
     # Pack AppImage into deb
-    - checkinstall --install=no -y --type=debian --pkgname=appimage-cli-tool --pkgversion=0.1.3 --backup=no --maintainer=contact@azubieta.net --pkglicense=MIT
+    - checkinstall --install=no -y --type=debian --pkgname=appimage-cli-tool --pkgversion=${APPIMAGE_CLI_TOOL_VERSION} --backup=no --maintainer=contact@azubieta.net --pkglicense=MIT
     # Transform deb into rpm
     - alien --to-rpm appimage-cli-tool*.deb
   artifacts:

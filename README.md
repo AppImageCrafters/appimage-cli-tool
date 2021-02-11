@@ -1,6 +1,13 @@
-# appimage-cli-tool
+CLI AppImage Management Tool
+============================
 
-A CLI app to manage your AppImage collection.
+Search, install, update and remove AppImage from the comfort of your CLI.
+
+Features:
+- Search/Install from the appimagehub.com catalog
+- Install from github.com
+- Update using the appimage-update
+- Manage your local AppImage collection
 
 ## Installation 
 
