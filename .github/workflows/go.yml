@@ -31,7 +31,7 @@ jobs:
           fi
 
       - name: Build
-        run: go build -o ./dist/app -v ./app
+        run: go build -o ./dist/appimage-cli-tool -v ./cmd
 
       - uses: AppImageCrafters/build-appimage-action@master
         id: pack
@@ -41,9 +41,9 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          path: '${{steps.pack.outputs.appimage_file}}*'
+          path: './*.AppImage'
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          path: './dist/app'
+          path: './dist/appimage-cli-tool'

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"appimage-manager/app/commands"
-	"appimage-manager/app/commands/install"
-	"appimage-manager/app/commands/update"
+	"appimage-cli-tool/cmd/commands"
+	"appimage-cli-tool/cmd/commands/install"
+	"appimage-cli-tool/cmd/commands/update"
 	"github.com/alecthomas/kong"
 )
 

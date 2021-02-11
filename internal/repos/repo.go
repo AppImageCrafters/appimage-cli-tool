@@ -1,7 +1,7 @@
 package repos
 
 import (
-	"appimage-manager/app/utils"
+	"appimage-cli-tool/internal/utils"
 )
 
 type Release struct {

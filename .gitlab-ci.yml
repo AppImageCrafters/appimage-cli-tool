@@ -8,8 +8,8 @@ build:
   stage: build
   script:
     - go get -v -t -d ./...
-    - go build -o ./dist/app -v ./app
-    - cp ./dist/app ./dist/appimage-manager-$(git describe)
+    - go build -o ./dist/appimage-cli-tool -v ./cmd
+    - cp ./dist/appimage-cli-tool ./dist/appimage_cli_tool-$(git describe)
   artifacts:
     paths:
       - ./dist
@@ -29,10 +29,10 @@ distro-pack:
     # Pack into an AppImage
     - appimage-builder --skip-test --recipe=appimage-builder.yml
     # Pack AppImage into deb
-    - checkinstall --install=no -y --type=debian --pkgname=appimage-manager --pkgversion=0.1.3 --backup=no --maintainer=contact@azubieta.net --pkglicense=MIT
+    - checkinstall --install=no -y --type=debian --pkgname=appimage-cli-tool --pkgversion=0.1.3 --backup=no --maintainer=contact@azubieta.net --pkglicense=MIT
     # Transform deb into rpm
-    - alien --to-rpm appimage-manager*.deb
+    - alien --to-rpm appimage-cli-tool*.deb
   artifacts:
     paths:
-      - "appimage-manager*"
+      - "appimage-cli-tool*"
     expire_in: 1 year

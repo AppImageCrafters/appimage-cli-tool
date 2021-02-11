@@ -1,12 +1,12 @@
 package install
 
 import (
+	"appimage-cli-tool/cmd/commands"
+	"appimage-cli-tool/internal/repos"
+	"appimage-cli-tool/internal/utils"
+
 	"fmt"
 	"os"
-
-	"appimage-manager/app/commands"
-	"appimage-manager/app/repos"
-	"appimage-manager/app/utils"
 )
 
 type InstallCmd struct {

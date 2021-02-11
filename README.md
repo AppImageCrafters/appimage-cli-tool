@@ -1,17 +1,17 @@
-# appimage-manager
+# appimage-cli-tool
 
 A CLI app to manage your AppImage collection.
 
 ## Installation 
 
 ```shell script
-sudo wget https://github.com/AppImageCrafters/appimage-manager/releases/latest/download/app -O /usr/local/bin/app; 
-sudo chmod +x /usr/local/bin/app
+sudo wget https://github.com/AppImageCrafters/appimage-cli-tool/releases/latest/download/appimage-cli-tool -O /usr/local/bin/appimage-cli-tool; 
+sudo chmod +x /usr/local/bin/appimage-cli-tool
 ```
 
 ## Usage
 ```shell script
-Usage: app <command>
+Usage: appimage-cli-tool <command>
 
 Flags:
   --help     Show context-sensitive help.
