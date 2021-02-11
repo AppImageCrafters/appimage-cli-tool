@@ -33,16 +33,12 @@ jobs:
       - name: Build
         run: go build -o ./dist/appimage-cli-tool -v ./cmd
 
-      - name: Get Version
-        id: get_version
-        run: echo ::set-output name=VERSION::$(git describe)
-
       - uses: AppImageCrafters/build-appimage-action@master
         id: pack
         with:
           recipe: 'appimage-builder.yml'
         env:
-          APPIMAGE_CLI_TOOL_VERSION: ${{ steps.get_version.outputs.VERSION }}
+          APPIMAGE_CLI_TOOL_VERSION: 0.1.4
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2

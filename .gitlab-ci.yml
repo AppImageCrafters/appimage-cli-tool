@@ -20,13 +20,13 @@ distro-pack:
   stage: pack
   variables:
     DEBIAN_FRONTEND: noninteractive
+    APPIMAGE_CLI_TOOL_VERSION: 0.1.4
   dependencies:
     - build
   before_script:
     - apt-get update -y
     - apt-get install -y checkinstall alien git
   script:
-    - export APPIMAGE_CLI_TOOL_VERSION=$(git describe)
     # Pack into an AppImage
     - appimage-builder --skip-test --recipe=appimage-builder.yml
     # Pack AppImage into deb
