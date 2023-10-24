@@ -12,7 +12,7 @@ Features:
 ## Installation 
 
 ```shell script
-sudo wget https://github.com/AppImageCrafters/appimage-cli-tool/releases/latest/download/appimage-cli-tool -O /usr/local/bin/appimage-cli-tool; 
+sudo wget https://github.com/AppImageCrafters/appimage-cli-tool/releases/download/continuous/appimage-cli-tool -O /usr/local/bin/appimage-cli-tool; 
 sudo chmod +x /usr/local/bin/appimage-cli-tool
 ```
 
